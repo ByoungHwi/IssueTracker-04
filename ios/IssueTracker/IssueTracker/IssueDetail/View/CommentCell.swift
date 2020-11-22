@@ -7,13 +7,6 @@
 
 import UIKit
 
-protocol CommentCellData {
-    var comment: String { get }
-    var authorName: String { get }
-    var authorImg: String { get }
-    var commentDate: Date { get }
-}
-
 class CommentCell: UICollectionViewCell {
 
     @IBOutlet weak var containerView: UIView!
@@ -39,7 +32,6 @@ class CommentCell: UICollectionViewCell {
     }
     
     func configure(with data: CommentCellData) {
-        authorImageView.image = UIImage.checkmark //http 통신으로 로드
         authorLabel.text = data.authorName
         dateLabel.text = Date().difference(with: data.commentDate)
         commentLabel.text = data.comment

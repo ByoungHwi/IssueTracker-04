@@ -75,10 +75,6 @@ extension LoginViewController: ASAuthorizationControllerDelegate {
             return
         }
         let userIdentifier = appleIDCredential.user
-        let fullName = appleIDCredential.fullName
-        let email = appleIDCredential.email
-        
-        /// - TODO: 서버에 데이터 전달 및 뷰 이동
         
         saveUserInKeychain(userIdentifier)
     }

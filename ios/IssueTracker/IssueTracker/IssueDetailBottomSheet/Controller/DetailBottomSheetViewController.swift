@@ -7,25 +7,23 @@
 
 import UIKit
 
-protocol IssueDetailSlideViewControllerDelegate: class {
+protocol DetailBottomSheetViewControllerDelegate: class {
     func issueButtonDidTouch(flag: Bool)
     func addCommentButtonDidTouch()
     func moveAboveCellButtonDidTouch()
     func moveBelowCellButtonDidTouch()
 }
 
-class IssueDetailSlideViewController: UIViewController {
+class DetailBottomSheetViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    weak var delegate: IssueDetailSlideViewControllerDelegate?
+    weak var delegate: DetailBottomSheetViewControllerDelegate?
     
-    var adapter: IssueSlideVIewCollectionViewAdapter? {
+    var adapter: BottomSheetCollectionViewAdapter? {
         didSet {
             collectionView.dataSource = adapter
         }
     }
-    
-    var networkManager: DetailEditNetworkManager?
     var issueNo: Int = 0
     
     override func viewDidLoad() {
@@ -41,7 +39,7 @@ class IssueDetailSlideViewController: UIViewController {
             return
         }
         let selectedItems: [DetailEditCellData]
-        let networkManager: DetailNetworkManager
+        let networkManager: DetailNetworkManaging
         let networkService = NetworkService()
         switch segue.identifier {
         case "ToEditAssignee":
@@ -55,12 +53,14 @@ class IssueDetailSlideViewController: UIViewController {
         case "ToEditMilestone":
             editViewController.mode = .milestone
             networkManager = MilestoneEditNetworkManager(service: networkService, userData: UserData())
-            let milestone = adapter.dataManager.milestone
+            guard let milestone = adapter.dataManager.milestone else {
+                return
+            }
             selectedItems = [DetailEditCellData(type: .milestone, itemId: milestone.milestoneNo ?? 0, title: milestone.milestoneTitle ?? "")]
         default:
             return
         }
-        let dataManager = DetailEditDatasourceManager(networkManager: networkManager)
+        let dataManager = DetailEditDatasourceManager(networkManager: networkManager, issueNo: issueNo)
         dataManager.selectedItems = selectedItems
         editViewController.delegate = self
         editViewController.dataManager = dataManager
@@ -101,7 +101,7 @@ class IssueDetailSlideViewController: UIViewController {
         guard let section = notification.userInfo?["section"] as? Int else {
             return
         }
-        switch IssueSlideViewDataSourceManager.Section(rawValue: section) {
+        switch BottomSheetSection(rawValue: section) {
         case .assignee:
             performSegue(withIdentifier: "ToEditAssignee", sender: nil)
         case .label:
@@ -134,7 +134,7 @@ class IssueDetailSlideViewController: UIViewController {
     
 }
 
-extension IssueDetailSlideViewController: UICollectionViewDelegateFlowLayout {
+extension DetailBottomSheetViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: collectionView.frame.width - 32, height: 58)
@@ -174,13 +174,13 @@ extension IssueDetailSlideViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension IssueDetailSlideViewController: UIGestureRecognizerDelegate {
+extension DetailBottomSheetViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         collectionView.contentOffset.y <= 0
     }
 }
 
-extension IssueDetailSlideViewController: IssueDetailEditDelegate {
+extension DetailBottomSheetViewController: IssueDetailEditDelegate {
     func itemDidUpdate(items: [DetailEditCellData], mode: IssueDetailEditViewController.Mode) {
         switch mode {
         case .assignee:
@@ -188,14 +188,10 @@ extension IssueDetailSlideViewController: IssueDetailEditDelegate {
             collectionView.reloadSections([mode.rawValue])
         case .label:
             let labels = items.map { Label(labelNo: $0.itemId, labelTitle: $0.title, labelColor: $0.rawData) }
-            networkManager?.labelUpdateRequest(issueNo: issueNo, labels: labels) { [weak self] isSuccess in
-                if isSuccess {
-                    self?.adapter?.dataManager.labels = labels
-                    NotificationCenter.default.post(Notification(name: .issueListRefreshRequested))
-                    DispatchQueue.main.async {
-                        self?.collectionView.reloadSections([mode.rawValue])
-                    }
-                }
+            adapter?.dataManager.labels = labels
+            NotificationCenter.default.post(Notification(name: .issueListRefreshRequested))
+            DispatchQueue.main.async { [weak self] in
+                self?.collectionView.reloadSections([mode.rawValue])
             }
         case .milestone:
             adapter?.dataManager.milestone = Milestone(milestoneNo: items[0].itemId, milestoneTitle: items[0].title)

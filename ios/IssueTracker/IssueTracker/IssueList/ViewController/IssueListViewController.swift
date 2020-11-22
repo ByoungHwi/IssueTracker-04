@@ -164,16 +164,10 @@ class IssueListViewController: UIViewController {
             return
         }
         collectionViewAdapter?.dataSourceManager.deleteIssue(by: issueNo) { [weak self] index in
-            self?.issueListCollectionView.performBatchUpdates {
-                self?.issueListCollectionView.deleteItems(at: [index])
-            } completion: { _ in
-//                let context = UICollectionViewFlowLayoutInvalidationContext()
-//                context.invalidateFlowLayoutAttributes = false
-//                self?.issueListCollectionView.collectionViewLayout.invalidateLayout(with: context)
-//                UIView.animate(withDuration: 0.3) {
-//                    self?.issueListCollectionView.layoutIfNeeded()
-//                }
-            }
+//            self?.issueListCollectionView.performBatchUpdates {
+//                self?.issueListCollectionView.deleteItems(at: [index])
+//            }
+            self?.issueListCollectionView.deleteItems(at: [index])
         }
     }
     
@@ -242,8 +236,8 @@ class IssueListViewController: UIViewController {
 
 extension IssueListViewController: IssueAddViewControllerDelegate {
     
-    func issueSendButtonDidTouch(request: IssueAddRequest) {
-        collectionViewAdapter?.dataSourceManager.add(issue: request) { [weak self] complete in
+    func issueSendButtonDidTouch(issueTitle: String, issueContent: String) {
+        collectionViewAdapter?.dataSourceManager.add(title: issueTitle, content: issueContent) { [weak self] complete in
             if complete {
                 DispatchQueue.main.async {
                     self?.issueListCollectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
@@ -254,7 +248,7 @@ extension IssueListViewController: IssueAddViewControllerDelegate {
     
 }
 
-extension IssueListViewController: UICollectionViewDelegate {
+extension IssueListViewController: UICollectionViewDelegateFlowLayout {
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         view.endEditing(true)
@@ -272,7 +266,7 @@ extension IssueListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch mode {
         case .normal:
-            performSegue(withIdentifier: "IssueListToDetail", sender: indexPath) // send selectedIssue ID
+            performSegue(withIdentifier: "IssueListToDetail", sender: indexPath)
         case .edit:
             setSelectedIssueCountLabel()
         }

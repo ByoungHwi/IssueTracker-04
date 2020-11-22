@@ -7,9 +7,9 @@
 
 import Foundation
 
-class MilestoneDatasourceManager {
+class MilestoneDatasourceManager: MilestoneDataManaging {
     
-    private let networkManager: MilestoneNetworkManager
+    private let networkManager: MilestoneNetworkManaging
     var items: [Milestone] = []
     var itemCount: Int {
         items.count
@@ -19,7 +19,7 @@ class MilestoneDatasourceManager {
         items[indexPath.row]
     }
     
-    init(networkManager: MilestoneNetworkManager) {
+    init(networkManager: MilestoneNetworkManaging) {
         self.networkManager = networkManager
     }
     
@@ -40,9 +40,9 @@ class MilestoneDatasourceManager {
     func add(item: Milestone, completion: @escaping ((IndexPath) -> Void)) {
         networkManager.add(milestone: item) { [weak self] result in
             switch result {
-            case .success(let response):
+            case .success(let newMilestoneNo):
                 var newItem = item
-                newItem.milestoneNo = response.milestoneNo
+                newItem.milestoneNo = newMilestoneNo
                 self?.items.append(newItem)
                 guard let count = self?.items.count else { return }
                 completion(IndexPath(row: count - 1, section: 0))
@@ -56,7 +56,7 @@ class MilestoneDatasourceManager {
     func update(item: Milestone, indexPath: IndexPath, completion: @escaping (IndexPath) -> Void) {
         networkManager.update(milestone: item) { [weak self] result in
             switch result {
-            case .success(_):
+            case .success:
                 self?.items[indexPath.row] = item
                 completion(indexPath)
             case .failure(let error):
@@ -69,7 +69,7 @@ class MilestoneDatasourceManager {
     func delete(with milestoneNo: Int, completion: @escaping (IndexPath) -> Void) {
         networkManager.delete(milestoneNo: milestoneNo) { [weak self] result in
             switch result {
-            case .success(_):
+            case .success:
                 guard let index = (self?.items.firstIndex { $0.milestoneNo == milestoneNo }) else {
                     return
                 }

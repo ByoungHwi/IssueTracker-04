@@ -7,14 +7,6 @@
 
 import UIKit
 
-protocol IssueListCollectionViewCellData {
-    var issueNo: Int { get }
-    var issueTitle: String { get }
-    var issueContent: String { get }
-    var milestoneTitle: String { get }
-    var labels: [Label] { get }
-}
-
 class IssueListCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
@@ -78,7 +70,7 @@ class IssueListCollectionViewCell: UICollectionViewCell {
         titleLabel.text = data.issueTitle
         contentLabel.text = data.issueContent
         milestoneLabel.text = data.milestoneTitle
-        milestoneLabel.isHidden = data.milestoneTitle.count == 0
+        milestoneLabel.isHidden = !(data.milestoneTitle?.count != 0)
         labelContainerView.add(labels: data.labels)
         labelRowCount = CGFloat(labelContainerView.labelRows)
         setSelectionButton(isSelected: isSelected)

@@ -7,11 +7,6 @@
 
 import UIKit
 
-protocol LabelListCellData {
-    var label: Label { get }
-    var labelDescription: String { get }
-}
-
 class LabelListCell: SwipeToDeleteCollectionViewCell {
     
     var badgeLabel: BadgeLabel?

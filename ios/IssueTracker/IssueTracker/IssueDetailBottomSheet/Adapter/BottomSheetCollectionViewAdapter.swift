@@ -7,11 +7,11 @@
 
 import UIKit
 
-class IssueSlideVIewCollectionViewAdapter: NSObject, UICollectionViewDataSource {
+class BottomSheetCollectionViewAdapter: NSObject, UICollectionViewDataSource {
     
-    var dataManager: IssueSlideViewDataSourceManager
+    var dataManager: DetailBottomSheetDataManaging
     
-    init(dataManager: IssueSlideViewDataSourceManager) {
+    init(dataManager: DetailBottomSheetDataManaging) {
         self.dataManager = dataManager
     }
     
@@ -67,10 +67,11 @@ class IssueSlideVIewCollectionViewAdapter: NSObject, UICollectionViewDataSource 
             return labelCell
             
         case .milestone:
-            guard let milestoneCell = collectionView.dequeueReusableCell(withReuseIdentifier: MileStoneCollectionViewCell.identifier, for: indexPath) as? MileStoneCollectionViewCell else {
+            guard let milestone = dataManager.milestone,
+                  let milestoneCell = collectionView.dequeueReusableCell(withReuseIdentifier: MileStoneCollectionViewCell.identifier, for: indexPath) as? MileStoneCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            milestoneCell.mileStoneLabel.text = dataManager.milestone.milestoneTitle
+            milestoneCell.mileStoneLabel.text = milestone.milestoneTitle
             return milestoneCell
             
         case .option:

@@ -7,26 +7,14 @@
 
 import Foundation
 
-class DetailEditDatasourceManager {
+class DetailEditDatasourceManager: DetailEditDataManaging {
     
-    enum Section: Int, CaseIterable {
-        case selected
-        case unSelected
-        
-        var description: String {
-            switch self {
-            case .selected:
-                return "SELECTED"
-            case .unSelected:
-                return ""
-            }
-        }
-    }
+    var networkManager: DetailNetworkManaging
+    var issueNo: Int
     
-    var networkManager: DetailNetworkManager
-    
-    init(networkManager: DetailNetworkManager) {
+    init(networkManager: DetailNetworkManaging, issueNo: Int) {
         self.networkManager = networkManager
+        self.issueNo = issueNo
     }
     
     var selectedItems: [DetailEditCellData] = []
@@ -44,19 +32,19 @@ class DetailEditDatasourceManager {
     }
     
     var numberOfSections: Int {
-        Section.allCases.count
+        EditSection.allCases.count
     }
     
-    func section(of indexPath: IndexPath) -> Section? {
-        Section(rawValue: indexPath.section)
+    func section(of indexPath: IndexPath) -> EditSection? {
+        EditSection(rawValue: indexPath.section)
     }
     
     func headerTitle(of section: Int) -> String? {
-        Section(rawValue: section)?.description
+        EditSection(rawValue: section)?.description
     }
     
     func numberOfRow(at section: Int) -> Int {
-        switch Section(rawValue: section) {
+        switch EditSection(rawValue: section) {
         case .selected:
             return selectedItems.count
         case .unSelected:
@@ -107,7 +95,9 @@ class DetailEditDatasourceManager {
         }
     }
     
-    func updateItems(completion: ((Bool) -> Void)) {
-        completion(true)
+    func updateItems(completion: @escaping ((Bool) -> Void)) {
+        networkManager.update(issueNo: issueNo, updateItems: selectedItems) { isSuccess in
+            completion(isSuccess)
+        }
     }
 }

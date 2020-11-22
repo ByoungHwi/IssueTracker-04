@@ -9,10 +9,10 @@ import UIKit
 
 class IssueListCollectionViewAdapter: NSObject, UICollectionViewDataSource {
     
-    var dataSourceManager: IssueListDataSourceManager
+    var dataSourceManager: IssueListDataManaging
     var mode: IssueListViewController.Mode = .normal
     
-    init(dataSourceManager: IssueListDataSourceManager) {
+    init(dataSourceManager: IssueListDataManaging) {
         self.dataSourceManager = dataSourceManager
     }
     
@@ -27,6 +27,7 @@ class IssueListCollectionViewAdapter: NSObject, UICollectionViewDataSource {
         }
         let item = dataSourceManager[indexPath]
         itemCell.cellMainWidth = collectionView.frame.width
+        itemCell.labelRowCount = 0
         itemCell.configure(with: item)
         itemCell.mode = mode
         switch mode {

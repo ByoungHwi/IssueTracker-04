@@ -9,9 +9,9 @@ import UIKit
 
 class IssueDetailCollectionViewAdapter: NSObject, UICollectionViewDataSource {
     
-    var dataManager: IssueDetailDataSourceManager
+    var dataManager: IssueDetailDataManaging
     
-    init(dataManager: IssueDetailDataSourceManager) {
+    init(dataManager: IssueDetailDataManaging) {
         self.dataManager = dataManager
     }
     
@@ -33,11 +33,11 @@ class IssueDetailCollectionViewAdapter: NSObject, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let item = dataManager.issueInfo,
+        guard let item = dataManager.detailItem,
               let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: IssueDetailCollectionViewHeader.identifier, for: indexPath) as? IssueDetailCollectionViewHeader else {
             return UICollectionReusableView()
         }
-        
+        ImageLoader.shared.load(url: item.detailInfo.authorImg, to: header.authorImageView)
         header.configure(with: item)
         header.viewWidth = collectionView.frame.width
         

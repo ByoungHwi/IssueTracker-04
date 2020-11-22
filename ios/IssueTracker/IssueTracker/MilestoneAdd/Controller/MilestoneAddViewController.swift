@@ -87,7 +87,7 @@ class MilestoneAddViewController: UIViewController {
 
 extension MilestoneAddViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let shouldWrite =  DateTextFieldManager().isValidate(text: textField.text, input: string)
+        let shouldWrite =  DateTextFieldValidationChecker().isValidate(text: textField.text, input: string)
         var originalText = textField.text
         if (range.location == 4 || range.location == 7) && string != "" {
             originalText?.append("-")
