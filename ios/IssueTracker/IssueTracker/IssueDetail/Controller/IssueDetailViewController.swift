@@ -34,7 +34,7 @@ class IssueDetailViewController: UIViewController {
         
         detailCollectionViewAdapter.dataManager.loadDetailItem(issueNo: issueNo) { result in
             switch result {
-            case .success(let _):
+            case .success:
                 DispatchQueue.main.async { [weak self] in
                     self?.configureCollectionView()
                     self?.detailCollectionView.reloadData()
@@ -54,24 +54,19 @@ class IssueDetailViewController: UIViewController {
     }
     
     private func configureSlideView() {
-        guard let slideViewController = children.first as? IssueDetailSlideViewController,
-              let detailItem = detailCollectionViewAdapter.dataManager.detailItem,
-              let issueInfo = detailCollectionViewAdapter.dataManager.issueInfo else {
+        guard let slideViewController = children.first as? DetailBottomSheetViewController,
+              let detailItem = detailCollectionViewAdapter.dataManager.detailItem else {
             return
         }
-        let slideViewDataManager = IssueSlideViewDataSourceManager()
+        let slideViewDataManager = DetailBottomSheetDataSourceManager()
         slideViewController.delegate = self
         slideViewDataManager.assignees = detailItem.assignees
         slideViewDataManager.labels = detailItem.labels
         slideViewDataManager.milestone = detailItem.milestone
-        slideViewDataManager.issueFlag = issueInfo.isOpen
-        
-        let networkService = NetworkService()
-        let networkManager = DetailEditNetworkManager(service: networkService, userData: UserData())
+        slideViewDataManager.issueFlag = detailItem.issue.isOpen
         
         slideViewController.issueNo = issueNo
-        slideViewController.networkManager = networkManager
-        slideViewController.adapter = IssueSlideVIewCollectionViewAdapter(dataManager: slideViewDataManager)
+        slideViewController.adapter = BottomSheetCollectionViewAdapter(dataManager: slideViewDataManager)
         slideViewController.reloadData()
         slideViewPanGesture.delegate = slideViewController
     }
@@ -152,7 +147,7 @@ extension IssueDetailViewController: CommentAddViewControllerDelegate {
     }
 }
 
-extension IssueDetailViewController: IssueDetailSlideViewControllerDelegate {
+extension IssueDetailViewController: DetailBottomSheetViewControllerDelegate {
     
     func issueButtonDidTouch(flag: Bool) {
         detailCollectionViewAdapter.dataManager.setIssueFlag(flag)
@@ -188,9 +183,4 @@ extension IssueDetailViewController: IssueDetailSlideViewControllerDelegate {
         
         detailCollectionView.scrollToItem(at: IndexPath(row: bottomIndexPath.row + 1, section: 0), at: .bottom, animated: true)
     }
-    
-    func scrollCell(to cell: UICollectionViewCell) {
-        
-    }
-    
 }

@@ -7,7 +7,18 @@
 
 import Foundation
 
-class IssueDetailNetworkManager: NetworkManager {
+class IssueDetailNetworkManager: NetworkManager, IssueDetailNetworkManaging {
+    
+    struct AddCommentResponse: Codable {
+        var success: Bool
+        var message: String
+        var commentNo: Int
+    }
+
+    struct AddCommentRequest: Codable {
+        var issueNo: Int
+        var comment: String
+    }
     
     static let issueDetailRequestURL = baseURL + "/api/issue/"
     static let addCommentRequestURL = baseURL + "/api/comment"
@@ -52,15 +63,4 @@ class IssueDetailNetworkManager: NetworkManager {
             }
         }
     }
-}
-
-struct AddCommentResponse: Codable {
-    var success: Bool
-    var message: String
-    var commentNo: Int
-}
-
-struct AddCommentRequest: Codable {
-    var issueNo: Int
-    var comment: String
 }

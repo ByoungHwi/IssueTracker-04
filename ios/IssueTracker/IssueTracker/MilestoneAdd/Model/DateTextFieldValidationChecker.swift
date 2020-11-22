@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DateTextFieldManager {
+struct DateTextFieldValidationChecker {
     
     var allowedCharacterSet = CharacterSet.decimalDigits
     

@@ -8,9 +8,9 @@
 import UIKit
 
 class MilestoneCollectionViewAdapter: NSObject {
-    var dataManager: MilestoneDatasourceManager
+    var dataManager: MilestoneDataManaging
     
-    init(dataManager: MilestoneDatasourceManager) {
+    init(dataManager: MilestoneDataManaging) {
         self.dataManager = dataManager
     }
 }

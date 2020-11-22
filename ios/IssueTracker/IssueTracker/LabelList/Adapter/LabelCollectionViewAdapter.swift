@@ -8,9 +8,9 @@
 import UIKit
 
 class LabelCollectionViewAdapter: NSObject {
-    var dataManager: LabelDatasourceManager
+    var dataManager: LabelDataManaging
     
-    init(dataManager: LabelDatasourceManager) {
+    init(dataManager: LabelDataManaging) {
         self.dataManager = dataManager
     }
 }

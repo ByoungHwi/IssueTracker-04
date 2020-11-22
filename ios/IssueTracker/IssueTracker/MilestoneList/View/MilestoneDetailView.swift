@@ -7,16 +7,6 @@
 
 import UIKit
 
-protocol MilestoneDetailViewData {
-    var milestoneNo: Int { get }
-    var milestoneTitle: String { get }
-    var dueDate: Date? { get }
-    var milestoneDescription: String? { get }
-    var percent: Double? { get }
-    var openIssueCount: Int? { get }
-    var closedIssueCount: Int? { get }
-}
-
 class MilestoneDetailView: UIView {
 
     private var xibName: String {
@@ -49,7 +39,7 @@ class MilestoneDetailView: UIView {
         self.addSubview(view)
     }
     
-    func configure(with data: Milestone) {
+    func configure(with data: MilestoneDetailViewData) {
         titleLabel.text = data.milestoneTitle
         descriptionLabel.text = data.milestoneDescription
         percentLabel.text = "\(data.percent ?? 0)%"

@@ -9,7 +9,7 @@ import UIKit
 import WebKit
 
 protocol IssueAddViewControllerDelegate: class {
-    func issueSendButtonDidTouch(request: IssueAddRequest)
+    func issueSendButtonDidTouch(issueTitle: String, issueContent: String)
 }
 
 class IssueAddViewController: UIViewController {
@@ -66,7 +66,7 @@ class IssueAddViewController: UIViewController {
               let content = markdownTextView.text else {
             return
         }
-        delegate?.issueSendButtonDidTouch(request: IssueAddRequest(issueTitle: title, issueContent: content))
+        delegate?.issueSendButtonDidTouch(issueTitle: title, issueContent: content)
         navigationController?.popViewController(animated: true)
     }
     

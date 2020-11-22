@@ -30,7 +30,7 @@ class MilestoneListViewController: UIViewController {
     }
     
     func loadMilestones() {
-        adapter?.dataManager.load() { [weak self] complete in
+        adapter?.dataManager.load { [weak self] complete in
             DispatchQueue.main.async {
                 if complete {
                     self?.collectionView.reloadData()

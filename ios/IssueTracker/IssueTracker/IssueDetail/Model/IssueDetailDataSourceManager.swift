@@ -7,42 +7,20 @@
 
 import Foundation
 
-struct IssueInfo: DetailHeaderData {
-    let issueNo: Int
-    let issueTitle, issueContent: String
-    let isOpen: Bool
-    let issueDate: Date
-    let issueAuthorNo: Int
-    let issueAuthorID: String
+class IssueDetailDataSourceManager: IssueDetailDataManaging {
     
-    init(detail: IssueDetail) {
-        issueNo = detail.issue.issueNo
-        issueTitle = detail.issue.issueTitle
-        issueContent = detail.issue.issueContent
-        isOpen = detail.issue.isOpen
-        issueDate = detail.issue.issueDate
-        issueAuthorNo = detail.issue.issueAuthorNo
-        issueAuthorID = detail.issue.issueAuthorName
-    }
-}
-
-class IssueDetailDataSourceManager {
+    private let networkManager: IssueDetailNetworkManaging
     
-    private let networkManager: IssueDetailNetworkManager
-    
-    init(networkManager: IssueDetailNetworkManager) {
+    init(networkManager: IssueDetailNetworkManaging) {
         self.networkManager = networkManager
     }
     
-    var detailItem: IssueDetail?
-    
-    var issueInfo: IssueInfo? {
-        guard let detail = detailItem else {
-            return nil
-        }
-        return IssueInfo(detail: detail)
+    subscript(indexPath: IndexPath) -> Comment? {
+        return detailItem?.comments[indexPath.row]
     }
     
+    var detailItem: IssueDetail?
+
     var commentCount: Int {
         detailItem?.comments.count ?? 0
     }
@@ -75,9 +53,5 @@ class IssueDetailDataSourceManager {
     
     func setIssueFlag(_ flag: Bool) {
         detailItem?.issue.isOpen = flag
-    }
-    
-    subscript(indexPath: IndexPath) -> Comment? {
-        return detailItem?.comments[indexPath.row]
     }
 }

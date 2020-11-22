@@ -24,7 +24,7 @@ class IssueDetailEditViewController: UIViewController {
     
     var mode: Mode = .assignee
     
-    var dataManager: DetailEditDatasourceManager?
+    var dataManager: DetailEditDataManaging?
     weak var delegate: IssueDetailEditDelegate?
     
     override func viewDidLoad() {
@@ -53,12 +53,15 @@ class IssueDetailEditViewController: UIViewController {
     }
     
     @IBAction func doneButtonDidTouch(_ sender: UIButton) {
-        dataManager?.updateItems { isSuccess in
-            guard isSuccess else {
+        dataManager?.updateItems { [weak self] isSuccess in
+            guard let self = self,
+                  isSuccess else {
                 return
             }
-            delegate?.itemDidUpdate(items: dataManager?.selectedItems ?? [], mode: mode)
-            dismiss(animated: true)
+            self.delegate?.itemDidUpdate(items: self.dataManager?.selectedItems ?? [], mode: self.mode)
+            DispatchQueue.main.async {
+                self.dismiss(animated: true)
+            }
         }
     }
 }

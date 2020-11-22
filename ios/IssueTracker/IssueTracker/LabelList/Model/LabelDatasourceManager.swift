@@ -7,20 +7,20 @@
 
 import Foundation
 
-class LabelDatasourceManager {
+class LabelDatasourceManager: LabelDataManaging {
     
     var items: [Label] = []
     var itemCount: Int {
         items.count
     }
     
-    private var networkManager: LabelListNetworkManager
+    private var networkManager: LabelListNetworkManaging
     
     subscript(indexPath: IndexPath) -> Label {
         items[indexPath.row]
     }
     
-    init(networkManager: LabelListNetworkManager) {
+    init(networkManager: LabelListNetworkManaging) {
         self.networkManager = networkManager
     }
     
@@ -40,8 +40,8 @@ class LabelDatasourceManager {
         var label = label
         networkManager.add(label: label) { [weak self] result in
             switch result {
-            case .success(let status):
-                label.labelNo = status.labelNo
+            case .success(let newLabelNo):
+                label.labelNo = newLabelNo
                 self?.items.append(label)
                 guard let row = self?.items.count else {
                     return

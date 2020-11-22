@@ -7,32 +7,31 @@
 
 import Foundation
 
-class IssueListDataSourceManager {
+class IssueListDataSourceManager: IssueListDataManaging {
     
-    var items: [IssueListCellData] = []
-    var networkManager: IssueListNetworkManager
+    var items: [IssueItem] = []
+    var networkManager: IssueListNetworkManaging
     var itemCount: Int {
         items.count
     }
     
-    init(networkManager: IssueListNetworkManager) {
+    init(networkManager: IssueListNetworkManaging) {
         self.networkManager = networkManager
     }
     
-    subscript(indexPath: IndexPath) -> IssueListCellData {
+    subscript(indexPath: IndexPath) -> IssueItem {
         items[indexPath.row]
     }
     
-    subscript(indexPaths: [IndexPath]) -> [IssueListCellData] {
+    subscript(indexPaths: [IndexPath]) -> [IssueItem] {
         indexPaths.map { self[$0] }
     }
     
-    func add(issue: IssueAddRequest, completion: @escaping (Bool) -> Void) {
-        networkManager.requestIssueAdd(issue: issue) { [weak self] result in
+    func add(title: String, content: String, completion: @escaping (Bool) -> Void) {
+        networkManager.requestAdd(title: title, content: content) { [weak self] result in
             switch result {
-            case .success(let response):
-                let issue = IssueListCellData(issueNo: response.newIssueNo, issueTitle: issue.issueTitle, issueContent: issue.issueContent, milestoneTitle: "", labels: [])
-                self?.items.insert(issue, at: 0)
+            case .success(let newItem):
+                self?.items.insert(newItem, at: 0)
                 completion(true)
             case .failure(let error):
                 print(error.localizedDescription)
@@ -43,11 +42,11 @@ class IssueListDataSourceManager {
     }
     
     func loadIssueList(completion: @escaping  (Bool) -> Void) {
-        networkManager.requestIssueList { [weak self] result in
+        networkManager.requestList { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let issues):
-                    self?.items = issues.map { $0.cellData() }
+                    self?.items = issues
                     completion(true)
                 case .failure(let error):
                     print(error.localizedDescription)
@@ -67,29 +66,18 @@ class IssueListDataSourceManager {
     }
     
     func deleteIssues(indexPaths: [IndexPath]) {
-        //let issueNoList = self[indexPaths].map { $0.issueNo }
         let deleteIndex = indexPaths.map { $0.row }
         items = items.indices
             .filter { !deleteIndex.contains($0) }
             .map { items[$0] }
     }
     
-    func indexPath(of issueNo: Int) -> IndexPath {
-        var firstIndex = 0
-        items.enumerated().forEach { index, item in
-            if item.issueNo == issueNo {
-                firstIndex = index
-            }
-        }
-        return IndexPath(row: firstIndex, section: 0)
-    }
-    
     func closeIssue(indexPath: IndexPath) {
-        //let issueNo = self[indexPath].issueNo
+        //API 미완성
     }
-    
+
     func closeIssues(indexPaths: [IndexPath]) {
-        //let issueNoList = self[indexPaths].map { $0.issueNo }
+        //API 미완성
     }
     
 }
