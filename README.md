@@ -107,3 +107,35 @@
 
 ### 스프린트 계획 회의
 - [Week 2](https://github.com/boostcamp-2020/IssueTracker-04/wiki/%EC%8A%A4%ED%94%84%EB%A6%B0%ED%8A%B8-%EA%B3%84%ED%9A%8D-%ED%9A%8C%EC%9D%98-Week-2)
+
+
+### iOS 구현 결과
+
+## 이슈 리스트 화면
+
+![리스트스크롤](https://user-images.githubusercontent.com/48614208/99902846-1461b980-2d04-11eb-853d-5bfa3b4afb0f.gif)
+
+![삭제](https://user-images.githubusercontent.com/48614208/99902842-11ff5f80-2d04-11eb-98cc-65b471cace1f.gif)
+
+## 이슈 추가 화면
+
+![새이슈](https://user-images.githubusercontent.com/48614208/99902841-1166c900-2d04-11eb-873b-70ff7076ec4d.gif)
+
+## 이슈 필터 화면
+
+![필터](https://user-images.githubusercontent.com/48614208/99902840-10359c00-2d04-11eb-8618-970ae687fc7d.gif)
+
+**API미구현**
+
+## 이슈 상세 화면
+
+![이슈상세](https://user-images.githubusercontent.com/48614208/99902839-0ad85180-2d04-11eb-880e-d985ca187ca8.gif)
+
+## 레이블 리스트 화면
+
+![레이블](https://user-images.githubusercontent.com/48614208/99902844-13308c80-2d04-11eb-8e55-35afd980006a.gif)
+
+## 마일스톤 리스트 화면
+
+![마일스톤](https://user-images.githubusercontent.com/48614208/99902845-13c92300-2d04-11eb-8648-8303ded94db8.gif)
+
